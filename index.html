@@ -3,13 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chess Puzzle Scanner</title>
+  <title>GM Puzzle Scanner</title>
 </head>
 <body>
-  <h1>GM Puzzle Scanner</h1>
-  <p>Upload your puzzle image below:</p>
-  <input type="file" id="upload" accept="image/*" />
-  <div id="result"></div>
+  <h2>GM Puzzle Scanner</h2>
+
+  <input type="file" accept="image/*" id="fileInput" capture="environment" />
+  <br><br>
+  <button onclick="uploadImage()">Scan Puzzle</button>
+
+  <div id="output"></div>
+
   <script src="script.js"></script>
 </body>
 </html>
