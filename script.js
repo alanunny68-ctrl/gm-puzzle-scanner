@@ -1,24 +1,32 @@
-document.getElementById('upload').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+function uploadImage() {
+    const input = document.getElementById('fileInput');
+    const file = input.files[0];
 
-  const resultDiv = document.getElementById('result');
-  resultDiv.textContent = 'Analyzing position...';
+    if (!file) {
+        alert("Please select or capture an image.");
+        return;
+    }
 
-  const reader = new FileReader();
-  reader.onload = async function(event) {
-    const imgBase64 = event.target.result;
+    const formData = new FormData();
+    formData.append("image", file);
 
-    const res = await fetch("https://stockfish.online/api/scan", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ image: imgBase64 })
+    // Send to online backend
+    fetch("https://gm-puzzle-api.vercel.app/upload", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const outputDiv = document.getElementById('output');
+        if (data.evaluation) {
+            outputDiv.innerText = "Evaluation: " + data.evaluation;
+        } else if (data.error) {
+            outputDiv.innerText = "Error: " + data.error;
+        } else {
+            outputDiv.innerText = "Unexpected response from server.";
+        }
+    })
+    .catch(error => {
+        document.getElementById('output').innerText = "Error: " + error.message;
     });
-
-    const data = await res.json();
-    resultDiv.textContent = JSON.stringify(data, null, 2);
-  };
-  reader.readAsDataURL(file);
-});
+}
