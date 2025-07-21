@@ -1,3 +1,4 @@
+
 function uploadImage() {
     const input = document.getElementById('fileInput');
     const file = input.files[0];
@@ -10,7 +11,7 @@ function uploadImage() {
     const formData = new FormData();
     formData.append("image", file);
 
-    // Send to online backend
+    // ✅ This must be exactly this:
     fetch("https://gm-puzzle-api.vercel.app/upload", {
         method: "POST",
         body: formData
