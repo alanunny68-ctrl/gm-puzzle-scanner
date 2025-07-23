@@ -12,7 +12,7 @@ function uploadImage() {
     formData.append("image", file);
 
     // ✅ This must be exactly this:
-    fetch("https://gm-puzzle-api.vercel.app/upload", {
+    fetch("https://gm-puzzle-api.vercel.app/api/upload", {
         method: "POST",
         body: formData
     })
