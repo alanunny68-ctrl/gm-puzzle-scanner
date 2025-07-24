@@ -1,33 +1,28 @@
+document.getElementById("upload-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
 
-function uploadImage() {
-    const input = document.getElementById('fileInput');
-    const file = input.files[0];
+  const fileInput = document.getElementById("image");
+  const file = fileInput.files[0];
 
-    if (!file) {
-        alert("Please select or capture an image.");
-        return;
-    }
+  if (!file) {
+    alert("Please select an image.");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("image", file);
+  const formData = new FormData();
+  formData.append("image", file);
 
-    // ✅ This must be exactly this:
-    fetch("https://gm-puzzle-api.vercel.app/api/upload", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        const outputDiv = document.getElementById('output');
-        if (data.evaluation) {
-            outputDiv.innerText = "Evaluation: " + data.evaluation;
-        } else if (data.error) {
-            outputDiv.innerText = "Error: " + data.error;
-        } else {
-            outputDiv.innerText = "Unexpected response from server.";
-        }
-    })
-    .catch(error => {
-        document.getElementById('output').innerText = "Error: " + error.message;
+  try {
+    const res = await fetch("https://gm-puzzle-api.onrender.com/upload", {
+      method: "POST",
+      body: formData,
     });
-}
+
+    const data = await res.json();
+    console.log(data);
+    document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    console.error("Upload failed:", err);
+    document.getElementById("output").textContent = "Failed to fetch response from server.";
+  }
+});
