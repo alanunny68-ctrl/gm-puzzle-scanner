@@ -4,15 +4,63 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GM Puzzle Scanner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f4f4f4;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      margin: 2rem auto;
+      padding: 1rem;
+      background: white;
+      border-radius: 10px;
+      max-width: 400px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="file"] {
+      margin-bottom: 1rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      background-color: #0070f3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    pre {
+      background: #222;
+      color: #0f0;
+      text-align: left;
+      padding: 1rem;
+      border-radius: 8px;
+      max-width: 90%;
+      margin: 2rem auto;
+      overflow-x: auto;
+    }
+  </style>
 </head>
 <body>
-  <h2>GM Puzzle Scanner</h2>
+  <h1>♟️ GM Puzzle Scanner</h1>
 
-  <input type="file" accept="image/*" id="fileInput" capture="environment" />
-  <br><br>
-  <button onclick="uploadImage()">Scan Puzzle</button>
+  <form id="upload-form">
+    <input type="file" id="image" name="image" accept="image/*" required />
+    <br />
+    <button type="submit">Upload Image</button>
+  </form>
 
-  <div id="output"></div>
+  <pre id="output">Waiting for image upload...</pre>
 
   <script src="script.js"></script>
 </body>
