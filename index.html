@@ -6,62 +6,79 @@
   <title>GM Puzzle Scanner</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background-color: #f4f4f4;
+      font-family: sans-serif;
       text-align: center;
+      padding: 20px;
     }
-
-    h1 {
-      color: #333;
+    video, canvas, img {
+      max-width: 100%;
+      margin-top: 10px;
+      border: 1px solid #ccc;
     }
-
-    form {
-      margin: 2rem auto;
-      padding: 1rem;
-      background: white;
-      border-radius: 10px;
-      max-width: 400px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    input[type="file"] {
-      margin-bottom: 1rem;
-    }
-
     button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      cursor: pointer;
-      background-color: #0070f3;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-
-    pre {
-      background: #222;
-      color: #0f0;
-      text-align: left;
-      padding: 1rem;
-      border-radius: 8px;
-      max-width: 90%;
-      margin: 2rem auto;
-      overflow-x: auto;
+      padding: 10px 15px;
+      font-size: 16px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>♟️ GM Puzzle Scanner</h1>
+  <h1>GM Puzzle Scanner</h1>
 
-  <form id="upload-form">
-    <input type="file" id="image" name="image" accept="image/*" required />
-    <br />
-    <button type="submit">Upload Image</button>
-  </form>
+  <video id="video" width="320" height="240" autoplay></video>
+  <br />
+  <button onclick="captureImage()">📸 Capture</button>
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+  <br />
+  <img id="preview" alt="Captured Image Preview" />
+  <p id="status"></p>
 
-  <pre id="output">Waiting for image upload...</pre>
+  <script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const preview = document.getElementById("preview");
+    const status = document.getElementById("status");
 
-  <script src="script.js"></script>
+    // Ask for camera access
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        status.textContent = "Camera access denied.";
+        console.error(err);
+      });
+
+    function captureImage() {
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Show preview
+      const dataURL = canvas.toDataURL("image/png");
+      preview.src = dataURL;
+
+      // Convert to blob
+      canvas.toBlob(blob => {
+        const formData = new FormData();
+        formData.append("image", blob, "capture.png");
+
+        status.textContent = "Uploading...";
+
+        fetch("https://gm-puzzle-api.onrender.com/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then(res => res.json())
+          .then(data => {
+            status.textContent = "✅ " + (data.message || "Upload successful");
+            console.log(data);
+          })
+          .catch(err => {
+            status.textContent = "❌ Failed to upload";
+            console.error(err);
+          });
+      }, "image/png");
+    }
+  </script>
 </body>
 </html>
